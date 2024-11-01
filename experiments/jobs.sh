@@ -1,5 +1,5 @@
 # Experiments for the CC News, CNN and PubMed datasets with generations from LLaMA-2-13B model
-
+#run.pyを異なる引数で実行するプログラム
 python run.py \
   --dataset_path ../datasets/core/cc_news/cc_news-llama2_13.jsonl \
   --dataset_name CC-News \

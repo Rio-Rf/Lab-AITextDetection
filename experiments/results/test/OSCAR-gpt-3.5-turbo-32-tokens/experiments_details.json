@@ -1,0 +1,15 @@
+{
+    "dataset_path": "../datasets/JP/oscar/oscar-test.jsonl",
+    "dataset_name": "OSCAR",
+    "human_sample_key": "text",
+    "machine_sample_key": "gpt-3.5-turbo_generated_text_wo_prompt",
+    "machine_text_source": "gpt-3.5-turbo",
+    "tokens_seen": 32,
+    "batch_size": 32,
+    "job_name": "OSCAR-gpt-3.5-turbo-32-tokens",
+    "start_time": "05:52PM on November 01, 2024",
+    "experiment_path": "results/test/OSCAR-gpt-3.5-turbo-32-tokens",
+    "accuracy_threshold": null,
+    "low_FPR_threshold": null,
+    "end_time": "05:53PM on November 01, 2024"
+}

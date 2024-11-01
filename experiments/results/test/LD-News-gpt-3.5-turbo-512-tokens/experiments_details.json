@@ -1,0 +1,15 @@
+{
+    "dataset_path": "../datasets/JP/ld_news/Livedoor-news-test.jsonl",
+    "dataset_name": "LD-News",
+    "human_sample_key": "article",
+    "machine_sample_key": "gpt-3.5-turbo_generated_text_wo_prompt",
+    "machine_text_source": "gpt-3.5-turbo",
+    "tokens_seen": 512,
+    "batch_size": 32,
+    "job_name": "LD-News-gpt-3.5-turbo-512-tokens",
+    "start_time": "06:21PM on July 29, 2024",
+    "experiment_path": "results/test/LD-News-gpt-3.5-turbo-512-tokens",
+    "accuracy_threshold": null,
+    "low_FPR_threshold": null,
+    "end_time": "06:26PM on July 29, 2024"
+}

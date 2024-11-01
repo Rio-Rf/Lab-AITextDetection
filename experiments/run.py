@@ -30,7 +30,7 @@ def main(args):
     # Set job name, experiment path and create directory
     args.job_name = (
             args.job_name
-            or f"{args.dataset_name}-{args.machine_text_source}-{args.tokens_seen}-tokens"
+            or f"{args.dataset_name}-{args.machine_text_source}-{args.tokens_seen}-tokens" #保存先ディレクトリ名
             .strip().replace(' ', '-')
     )
     breakpoint()

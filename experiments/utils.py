@@ -34,15 +34,17 @@ def save_json(data, save_path):
         json.dump(data.__dict__, f, ensure_ascii=False, indent=4)
 
 
-def save_experiment(args, score_df, fpr, tpr, f1_score, roc_auc, tpr_at_fpr_0_01):
+def save_experiment(args, score_df, fpr, tpr, f1_score, roc_auc, tpr_at_fpr_0_01, best_threshold = None, threshold_at_fpr_0_2 = None):
     fig, ax = plt.subplots(1, 1)
     ax.set_xscale("log")
 
-    annotation = f"ROC AUC: {roc_auc:.4f}\nF1 Score: {f1_score:.2f}\nTPR at 0.01% FPR:{100 * tpr_at_fpr_0_01:.2f}%"
+    annotation = f"ROC AUC: {roc_auc:.8f}\nF1 Score: {f1_score:.8f}\nTPR at 0.2% FPR:{100 * tpr_at_fpr_0_01:.2f}%"
     display = metrics.RocCurveDisplay(fpr=fpr, tpr=tpr, estimator_name=annotation)
     display.plot(ax=ax, linestyle="--")
     ax.set_title(f"{args.dataset_name} (n={len(score_df)})\nMachine Text from {args.machine_text_source}")
 
     fig.savefig(f"{args.experiment_path}/performance.png", bbox_inches='tight')
     score_df.to_csv(f"{args.experiment_path}/score_df.csv", index=False)
+    args.accuracy_threshold = best_threshold
+    args.low_FPR_threshold = threshold_at_fpr_0_2
     save_json(args, args.experiment_path)
