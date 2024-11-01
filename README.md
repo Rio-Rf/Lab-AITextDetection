@@ -3,7 +3,17 @@
 ### Binocularsを改良し、検出性能の向上させた。
 ## 開発環境
 ### python3.9のanacondaの環境を作成し、以下Installationの通りにパッケージをインストールした。
-#  
+## 各種ファイルについて
+### run_vali.py
+閾値を設定するためのプログラム、以下のコマンドで実行。
+```
+$ ./jobs_vali.sh
+```
+### run_test.py
+検出性能を評価するためのプログラム、結果はresultsフォルダに出力される。以下のコマンドで実行。
+```
+$ ./jobs_test.sh
+```
 # <img src="./assets/bino-logo.svg" width=40 style="padding-top: 0px"/>  Binoculars: Zero-Shot Detection of LLM-Generated Text [[paper]](https://arxiv.org/abs/2401.12070)[[demo]](https://huggingface.co/spaces/tomg-group-umd/Binoculars)
 
 <p align="center">
