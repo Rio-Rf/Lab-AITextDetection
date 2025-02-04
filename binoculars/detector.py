@@ -7,7 +7,7 @@ import transformers
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 from .utils import assert_tokenizer_consistency
-from .metrics import perplexity, tv_perplexity, cos_perplexity, js_perplexity, entropy, mse, kl_divergence, total_variation_distance, cosine_similarity, js_divergence, focal_loss
+from .metrics import perplexity, tv_perplexity, cos_perplexity, js_perplexity, focal_perplexity, entropy, mse, kl_divergence, total_variation_distance, cosine_similarity, js_divergence, focal_loss
 
 torch.set_grad_enabled(False)
 
@@ -23,7 +23,7 @@ huggingface_config = {
 # BINOCULARS_FPR_THRESHOLD = 0.856521725654602  # [rinna3.6b_livedoor] optimized for low-fpr [chosen at 0.01%]
 # BINOCULARS_ACCURACY_THRESHOLD = 0.8819  # [rinna3.6b_oscar] optimized for f1-score
 # BINOCULARS_FPR_THRESHOLD = 0.8318965435028076  # [rinna3.6b_oscar] optimized for low-fpr [chosen at 0.01%]
-BINOCULARS_ACCURACY_THRESHOLD = 1.0309
+BINOCULARS_ACCURACY_THRESHOLD = 0.9322
 
 DEVICE_1 = "cuda:2" if torch.cuda.is_available() else "cpu"
 DEVICE_2 = "cuda:1" if torch.cuda.device_count() > 1 else DEVICE_1
@@ -36,11 +36,13 @@ class Binoculars(object):
                 # observer_name_or_path: str = "cyberagent/calm2-7b",
                 # observer_name_or_path: str = "elyza/ELYZA-japanese-Llama-2-7b",
                 # observer_name_or_path: str = "tokyotech-llm/Swallow-7b-hf",
+                # observer_name_or_path: str = "meta-llama/Llama-2-7b-hf", #-hfが無いと無理だった
                  performer_name_or_path: str = "rinna/japanese-gpt-neox-3.6b-instruction-sft",
                 # performer_name_or_path: str = "rinna/japanese-gpt-neox-3.6b",
                 # performer_name_or_path: str = "cyberagent/calm2-7b-chat",
                 # performer_name_or_path: str = "elyza/ELYZA-japanese-Llama-2-7b-instruct",
                 # performer_name_or_path: str = "tokyotech-llm/Swallow-7b-instruct-hf",
+                # performer_name_or_path: str = "meta-llama/Llama-2-7b-chat-hf", #-hfが無いと無理だった
 
                 # observer_name_or_path: str = "tiiuae/falcon-7b",
                 # performer_name_or_path: str = "tiiuae/falcon-7b-instruct",
@@ -108,6 +110,7 @@ class Binoculars(object):
         #ppl = tv_perplexity(encodings, performer_logits)
         #ppl = cos_perplexity(encodings, performer_logits)
         #ppl = 10 * js_perplexity(encodings, performer_logits)
+        #ppl = focal_perplexity(encodings, performer_logits)
         #x_ppl = entropy(observer_logits.to(DEVICE_1), performer_logits.to(DEVICE_1),
         #                encodings.to(DEVICE_1), self.tokenizer.pad_token_id)
         #x_ppl_sym = entropy(performer_logits.to(DEVICE_1), observer_logits.to(DEVICE_1),

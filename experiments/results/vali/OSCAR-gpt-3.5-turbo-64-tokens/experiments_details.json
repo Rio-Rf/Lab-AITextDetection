@@ -7,9 +7,9 @@
     "tokens_seen": 64,
     "batch_size": 32,
     "job_name": "OSCAR-gpt-3.5-turbo-64-tokens",
-    "start_time": "05:03PM on November 01, 2024",
+    "start_time": "06:36PM on November 14, 2024",
     "experiment_path": "results/vali/OSCAR-gpt-3.5-turbo-64-tokens",
-    "accuracy_threshold": 0.9766,
-    "low_FPR_threshold": -0.7922077775001526,
-    "end_time": "05:12PM on November 01, 2024"
+    "accuracy_threshold": 1.0682999999999816,
+    "low_FPR_threshold": -0.8663793206214905,
+    "end_time": "06:43PM on November 14, 2024"
 }

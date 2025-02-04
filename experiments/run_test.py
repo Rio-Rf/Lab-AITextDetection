@@ -90,7 +90,7 @@ if __name__ == "__main__":
                         help="name of model used to generate machine text")
 
     # Scoring arguments ここで判別に用いるトークン数を変える
-    parser.add_argument("--tokens_seen", type=int, default=32, help="Number of tokens seen by the model")
+    parser.add_argument("--tokens_seen", type=int, default=512, help="Number of tokens seen by the model")
 
     # Computational arguments ここで一度にスコアを計算する文章の数を変える
     parser.add_argument("--batch_size", type=int, default=32)

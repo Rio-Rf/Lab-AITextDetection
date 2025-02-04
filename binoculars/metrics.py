@@ -119,6 +119,37 @@ def js_perplexity(encoding: transformers.BatchEncoding,
 
     return ppl
 
+def focal_perplexity(encoding: transformers.BatchEncoding,
+               logits: torch.Tensor,
+               median: bool = False,
+               temperature: float = 1.0,
+               gamma: float = 0.5,
+               alpha: float = 1.0):
+    # ロジットを調整
+    shifted_logits = logits[..., :-1, :].contiguous() / temperature
+    shifted_labels = encoding.input_ids[..., 1:].contiguous()
+    shifted_attention_mask = encoding.attention_mask[..., 1:].contiguous()
+
+    # ソフトマックスで確率を計算
+    probs = torch.softmax(shifted_logits, dim=-1)
+    #gather関数を使ってprobsの中から正解ラベルに対応する確率p_tを取得
+    p_t = probs.gather(dim=-1, index=shifted_labels.unsqueeze(-1)).squeeze(-1)
+
+    # 焦点損失を計算 FL(p_t​)=−α(1−p_t)^γ log(p_t)
+    fl = -alpha * (1 - p_t) ** gamma * p_t.log()
+    fl = fl * shifted_attention_mask  # attention maskで無視する部分の損失を0に
+
+    if median:
+        # medianの場合はNaNを埋めてnanmedianを計算
+        fl_nan = fl.masked_fill(~shifted_attention_mask.bool(), float("nan"))
+        ppl = np.nanmedian(fl_nan.cpu().float().numpy(), axis=1)
+    else:
+        # sumとmask sumで損失を平均して計算
+        ppl = fl.sum(1) / shifted_attention_mask.sum(1)
+        ppl = ppl.to("cpu").float().numpy()
+
+    return ppl
+
 # 32000次元の確率分布ベクトル、これを128回求める、それを32個の文章に対して行う
 def entropy(p_logits: torch.Tensor, # 「観測された」確率分布を表す
             q_logits: torch.Tensor, # 「予測された」確率分布を表す
@@ -364,7 +395,7 @@ def focal_loss(p_logits: torch.Tensor,
             sample_p: bool = False,
             temperature: float = 1.0,
             alpha: float = 1.0,
-            gamma: float = 2.0):
+            gamma: float = 1.1):
     vocab_size = p_logits.shape[-1]  # モデルが予測するトークンの種類の数 32000
     total_tokens_available = q_logits.shape[-2]  # 利用可能なトークン数
     p_scores, q_scores = p_logits / temperature, q_logits / temperature  # tempが高いと確率分布が滑らかになり、低いと尖る
@@ -372,7 +403,7 @@ def focal_loss(p_logits: torch.Tensor,
     p_proba = softmax_fn(p_scores).view(-1, vocab_size)  # ソフトマックス関数でロジットを確率分布に変換
     q_scores = q_scores.view(-1, vocab_size)  # 予測分布（q_logits）を適用する形に整形
 
-    # 焦点損失（Focal Loss）を計算
+    # 焦点損失（Focal Loss）を計算 FL(p_t​)=−α(1−p_t)^γ log(p_t)
     log_q_probs = F.log_softmax(q_scores, dim=-1)  # ソフトマックスを適用して対数を取る
     focal_weights = alpha * ((1 - torch.exp(log_q_probs)) ** gamma)  # 焦点損失の重み計算
     focal_loss = -focal_weights * p_proba * log_q_probs  # 焦点損失を適用
